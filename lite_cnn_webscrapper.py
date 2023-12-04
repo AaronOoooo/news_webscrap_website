@@ -82,3 +82,6 @@ def index():
 # Run the Flask app if this script is executed directly
 if __name__ == '__main__':
     app.run(debug=True, host='192.168.50.210', port=5000)
+
+
+#Misc line to delete
