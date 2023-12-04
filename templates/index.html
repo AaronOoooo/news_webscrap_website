@@ -7,21 +7,28 @@
     <title>News Headlines</title>
 </head>
 <body>
+    <!-- Display last update time -->
     <h3>Last Update: {{ last_update }}</h3>
+
+    <!-- Placeholder for Chicago temperature (currently not provided in the Python script) -->
     <div>
         <h3>Chicago, IL Temperature: {{ chicago_temperature }}°F</h3>
     </div>
 
+    <!-- Display CNN Lite Headlines -->
     <h1>CNN Lite Headlines</h1>
     <ul>
         {% for i in range(10) %}
+            <!-- Display each headline as a list item with a link -->
             <li><a href="{{ cnn_links[i] }}" target="_blank">{{ cnn_headlines[i] }}</a></li>
         {% endfor %}
     </ul>
 
+    <!-- Display NPR Headlines -->
     <h1>NPR Headlines</h1>
     <ul>
         {% for i in range(10) %}
+            <!-- Display each NPR headline as a list item with a link -->
             <li><a href="{{ npr_links[i] }}" target="_blank">{{ npr_headlines[i] }}</a></li>
         {% endfor %}
     </ul>
