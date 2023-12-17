@@ -1,5 +1,6 @@
 # Import necessary libraries
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
+import os
 import requests
 from bs4 import BeautifulSoup
 import threading
@@ -18,6 +19,8 @@ app.config.update(
     chicago_temperature='N/A',  # Default value
     last_update='N/A'
 )
+
+app.config['STATIC_FOLDER'] = 'static'
 
 # Function to get headlines from a generic website
 def get_headlines(url, tag, class_name, base_url='', text_inside_tag=False):
@@ -135,6 +138,14 @@ def index():
     # Retrieve headlines, links, temperature, and last update time from app configuration
     data = app.config
     return render_template('index.html', **data)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, app.config['STATIC_FOLDER']),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
 
 # Run the Flask app if this script is executed directly
 if __name__ == '__main__':
