@@ -33,11 +33,12 @@
 
         .left-column {
             flex-basis: 25%;
+            text-align: left; /* Adjust text alignment for the left column */
         }
 
         .right-column {
             flex-basis: 75%;
-            text-align: left; /* Adjust text alignment */
+            text-align: left; /* Adjust text alignment for the right column */
         }
 
         ul {
@@ -60,6 +61,12 @@
         /* Style for story content */
         .story-content {
             margin-top: 20px;
+        }
+
+        /* Add small bullets with little space between the bullet and the headline */
+        .left-column ul li {
+            list-style-type: disc; /* Use disc as the bullet style */
+            margin-bottom: 3px; /* Adjust the space between the bullet and the text */
         }
     </style>
 </head>
