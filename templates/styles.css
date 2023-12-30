@@ -1,0 +1,64 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 20px;
+}
+
+.column {
+    flex: 1;
+    margin: 10px;
+}
+
+.left-column {
+    flex-basis: 25%;
+    text-align: left; /* Adjust text alignment for the left column */
+}
+
+.right-column {
+    flex-basis: 75%;
+    text-align: left; /* Adjust text alignment for the right column */
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+h1, h3 {
+    margin-bottom: 10px;
+}
+
+h5 {
+    margin-top: 0;
+}
+
+p {
+    margin: 0; /* Remove default margin for paragraphs */
+}
+
+/* Style for story content */
+.story-content {
+    margin-top: 20px;
+}
+
+/* Add small bullets with little space between the bullet and the headline */
+.left-column ul li {
+    list-style-type: disc; /* Use disc as the bullet style */
+    margin-bottom: 4px; /* Adjust the space between the bullet and the text */
+    color: orange; /* Set the color of the bullet to orange */
+}

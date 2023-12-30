@@ -111,7 +111,7 @@ def refresh_data():
         npr_headlines, npr_links = get_npr_headlines()
 
         # Get the current temperature for Chicago
-        chicago_temperature = get_chicago_temperature(api_key="98b5440c37229f24cae94a28398d3f03")
+        chicago_temperature = get_chicago_temperature(api_key="place_holder")
 
         # Update the app configuration with the latest data
         app.config.update(
