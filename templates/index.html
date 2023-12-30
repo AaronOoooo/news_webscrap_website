@@ -1,56 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="900"> <!-- Refresh every 15 minutes (900 seconds) -->
-    <title>Aaron's News Scraper</title>
-    <link rel="icon" href="{{ url_for('favicon') }}" type="image/x-icon">
-
-    <!-- Inside the head section of index.html -->
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- ... (existing head content) ... -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 
 </head>
 <body>
-    <!-- Centered heading with Last Update Time and Chicago temperature -->
-    <h1>Aaron's News Scraper</h1>
-    <h5>Last Update: {{ last_update }} | Chicago, IL Temperature: {{ chicago_temperature }}°F</h5>
+    <header>
+        <h1>Aaron's News Scraper</h1>
+        <h5>Last Update: {{ last_update }} | Chicago, IL Temperature: {{ chicago_temperature }}°F</h5>
+    </header>
 
-    <!-- Two columns layout -->
-    <main>
-        <!-- Left column for headlines and links -->
-        <div class="column left-column">
-            <!-- Display CNN Lite Headlines -->
-            <h3>CNN Lite Headlines</h3>
-            <ul>
-                {% for i in range(10) %}
-                    <!-- Display each headline as a list item with a link -->
-                    <li><a href="#" class="headline-link" data-url="{{ cnn_links[i] }}">{{ cnn_headlines[i] }}</a></li>
-                {% endfor %}
-            </ul>
-
-            <!-- Display NPR Headlines -->
-            <h3>NPR Headlines</h3>
-            <ul>
-                {% for i in range(10) %}
-                    <!-- Display each NPR headline as a list item with a link -->
-                    <li><a href="#" class="headline-link" data-url="{{ npr_links[i] }}">{{ npr_headlines[i] }}</a></li>
-                {% endfor %}
-            </ul>
+    <main class="container">
+        <div class="centered-section">
+            <h2>Latest Headlines</h2>
         </div>
 
-        <!-- Right column for displaying the story when a headline link is clicked -->
-        <div class="column right-column">
-            <!-- Placeholder for the story content -->
-            <h3>Story</h3>
-            <div class="story-content" id="story-content-placeholder">
-                <p>Select a headline to view the story.</p>
+        <div class="columns-container">
+            <div class="column left-column">
+                <h3>CNN Lite Headlines</h3>
+                <ul>
+                    {% for i in range(10) %}
+                        <li><a href="#" class="headline-link" data-url="{{ cnn_links[i] }}">{{ cnn_headlines[i] }}</a></li>
+                    {% endfor %}
+                </ul>
+
+                <h3>NPR Headlines</h3>
+                <ul>
+                    {% for i in range(10) %}
+                        <li><a href="#" class="headline-link" data-url="{{ npr_links[i] }}">{{ npr_headlines[i] }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="column right-column">
+                <h3>Story</h3>
+                <div class="story-content" id="story-content-placeholder">
+                    <p>Select a headline to view the story.</p>
+                </div>
             </div>
         </div>
     </main>
 
     <script>
-        // JavaScript to handle click events on headline links
         document.addEventListener("DOMContentLoaded", function() {
             var headlineLinks = document.querySelectorAll('.headline-link');
             var storyContentPlaceholder = document.getElementById('story-content-placeholder');
@@ -59,13 +51,14 @@
                 link.addEventListener('click', function(event) {
                     event.preventDefault();
 
-                    // Fetch content from the provided URL
                     var url = link.getAttribute('data-url');
                     fetch(url)
                         .then(response => response.text())
                         .then(content => {
-                            // Update the story content in the right column
-                            storyContentPlaceholder.innerHTML = content;
+                            storyContentPlaceholder.innerHTML = `
+                                <h3>Story</h3>
+                                ${content}
+                            `;
                         })
                         .catch(error => {
                             console.error('Error fetching content:', error);

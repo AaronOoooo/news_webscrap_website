@@ -50,7 +50,8 @@ def get_headlines(url, tag, class_name, base_url='', text_inside_tag=False):
         if headline_tag is not None:
             # Get the text inside the anchor tag
             if text_inside_tag:
-                headline = ' '.join([text.strip() for text in headline_tag.find_all(text=True)])
+                headline = headline_tag.get_text(separator=' ', strip=True)
+
             else:
                 headline = headline_tag.text.strip()
 
