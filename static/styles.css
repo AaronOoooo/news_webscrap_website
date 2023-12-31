@@ -72,8 +72,11 @@ p {
     text-align: left; /* Align story content to the left */
 }
 
+/* Add this rule to decrease the font size in the left pane */
 .left-column ul li {
     list-style-type: disc;
     margin-bottom: 4px;
     color: orange;
+    font-size: 15px; /* Adjust the font size as needed */
 }
+
