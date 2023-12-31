@@ -114,14 +114,14 @@ def refresh_data():
         # Get the current temperature for Chicago
         chicago_temperature = get_chicago_temperature(api_key="place_holder")
 
-        # Update the app configuration with the latest data
+        # Update the app configuration with the latest data, including the formatted date
         app.config.update(
             cnn_headlines=cnn_headlines,
             cnn_links=cnn_links,
             npr_headlines=npr_headlines,
             npr_links=npr_links,
             chicago_temperature=chicago_temperature,
-            last_update=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            last_update=datetime.now().strftime("%a, %b %d, %Y @ %I:%M:%S %p"),  # Format the date with abbreviated day and month
         )
 
         # Sleep for 15 minutes before refreshing again
