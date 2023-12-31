@@ -3,7 +3,12 @@
 <head>
     <!-- ... (existing head content) ... -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-
+    <style>
+        /* Additional styles to adjust paragraph spacing */
+        #story-content-placeholder div p {
+            margin-bottom: 10px; /* Adjust the margin as needed */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -55,9 +60,11 @@
                     fetch(url)
                         .then(response => response.text())
                         .then(content => {
+                            content = content.replace(/\n\s*\n/g, '</p><p>'); // Replace consecutive newlines with paragraph breaks
+                            content = '<p>' + content + '</p>'; // Wrap the entire content in a paragraph
                             storyContentPlaceholder.innerHTML = `
                                 <h3>Story</h3>
-                                ${content}
+                                <div>${content}</div>
                             `;
                         })
                         .catch(error => {

@@ -36,7 +36,7 @@ main {
 
 .column {
     flex: 1;
-    margin: 10px;
+    margin: 10px 0; /* Adjust the margin to 10px top and bottom, 0 left and right */
     padding: 20px;
 }
 
@@ -75,5 +75,5 @@ p {
 .left-column ul li {
     list-style-type: disc;
     margin-bottom: 4px;
-    color: green;
+    color: orange;
 }
