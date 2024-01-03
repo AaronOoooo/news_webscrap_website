@@ -23,14 +23,14 @@
 
         <div class="columns-container">
             <div class="column left-column">
-                <h3>CNN Lite Headlines</h3>
+                <h3><img src="{{ url_for('static', filename='images/cnn_logo.jpg') }}" alt="CNN Logo" width="50" height="50"> </h3>
                 <ul>
                     {% for i in range(10) %}
                         <li><a href="#" class="headline-link" data-url="{{ cnn_links[i] }}">{{ cnn_headlines[i] }}</a></li>
                     {% endfor %}
                 </ul>
 
-                <h3>NPR Headlines</h3>
+                <h3><img src="{{ url_for('static', filename='images/npr_logo.jpg') }}" alt="NPR Logo" width="80" height="50"> </h3>
                 <ul>
                     {% for i in range(10) %}
                         <li><a href="#" class="headline-link" data-url="{{ npr_links[i] }}">{{ npr_headlines[i] }}</a></li>
