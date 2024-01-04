@@ -8,6 +8,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    background-color: #f4f4f4;
 }
 
 header {
@@ -22,6 +23,8 @@ main {
     width: 100%;
     max-width: 1200px;
     margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for depth */
 }
 
 .centered-section {
@@ -79,3 +82,27 @@ p {
     color: orange;
     font-size: 15px; /* Adjust the font size as needed */
 }
+
+/* Example hover effect for links */
+a:hover {
+    color: #ff6600; /* Change the text color on hover */
+    text-decoration: underline; /* Underline the link on hover */
+}
+
+/* Example fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.story-content {
+    animation: fadeIn 0.5s ease-in-out; /* Apply the fade-in animation to story content */
+}
+
+/* Example media query for responsiveness */
+@media (max-width: 768px) {
+    main {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+}
+
