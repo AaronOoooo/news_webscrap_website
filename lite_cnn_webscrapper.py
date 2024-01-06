@@ -125,7 +125,7 @@ def refresh_data():
         )
 
         # Sleep for 15 minutes before refreshing again
-        time.sleep(900)
+        time.sleep(600)
 
 # Run the refresh_data function before the first request is processed
 @app.before_first_request
