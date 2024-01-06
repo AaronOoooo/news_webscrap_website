@@ -106,3 +106,7 @@ a:hover {
     }
 }
 
+/* Gradient background for the main container */
+main {
+background: linear-gradient(to bottom, #ffffff, #e0dcdc);
+}
