@@ -1,5 +1,5 @@
 # Import necessary libraries
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 import os
 import requests
 from bs4 import BeautifulSoup
@@ -9,6 +9,9 @@ from datetime import datetime
 
 # Initialize Flask app
 app = Flask(__name__)
+
+# Path to the log file
+LOG_FILE_PATH = 'access_log.txt'
 
 # Initialize variables to store headlines, links, and temperature for CNN, NPR, and Chicago
 app.config.update(
@@ -136,6 +139,16 @@ def activate_job():
 # Define a route for the main page
 @app.route('/')
 def index():
+    # Get the visitor's IP address
+    visitor_ip = request.remote_addr
+
+    # Log the time, date, and IP address to a file
+    current_datetime = datetime.now().strftime("%a, %b %d, %Y @ %I:%M:%S %p")
+    log_entry = f"Visitor IP: {visitor_ip} - Date and Time: {current_datetime}\n"
+
+    with open(LOG_FILE_PATH, 'a') as log_file:
+        log_file.write(log_entry)
+
     # Retrieve headlines, links, temperature, and last update time from app configuration
     data = app.config
     return render_template('index.html', **data)
@@ -150,4 +163,9 @@ def favicon():
 
 # Run the Flask app if this script is executed directly
 if __name__ == '__main__':
+    # Create the log file if it doesn't exist
+    if not os.path.exists(LOG_FILE_PATH):
+        with open(LOG_FILE_PATH, 'w') as log_file:
+            log_file.write("Access Log:\n")
+
     app.run(debug=True, host='192.168.50.210', port=5000)
