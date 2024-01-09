@@ -14,6 +14,8 @@ body {
 header {
     text-align: center;
     padding: 10px;
+    max-width: 800px; /* Adjust the max-width as needed */
+    margin: 0 auto; /* Center the header horizontally */
 }
 
 main {
@@ -92,7 +94,7 @@ a:hover {
 /* Example fade-in animation */
 @keyframes fadeIn {
     from { opacity: 0; }
-    to { opacity: 100; }
+    to { opacity: 1; }
 }
 
 .story-content {
@@ -110,3 +112,12 @@ a:hover {
 main {
 background: linear-gradient(to bottom, #ffffff, #e0dcdc);
 }
+
+header h5 {
+    margin-bottom: 0px; /* Adjust the margin-bottom as needed */
+}
+
+.story-content {
+    margin-top: 0px; /* Adjust the margin-top as needed */
+}
+
