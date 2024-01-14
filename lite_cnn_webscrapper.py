@@ -107,7 +107,7 @@ def get_chicago_temperature(api_key):
 
 # Function to refresh headlines and temperature
 def refresh_data():
-    while True:
+    while True:         
         # Get headlines from CNN Lite
         cnn_headlines, cnn_links = get_cnn_lite_headlines()
 
