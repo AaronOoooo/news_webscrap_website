@@ -59,11 +59,11 @@
                     event.preventDefault();
 
                     var url = link.getAttribute('data-url');
-                    fetch(url)
+                    fetch('http://192.168.50.210:5000/fetch_npr_content/' + encodeURIComponent(url), { mode: 'cors' })
                         .then(response => response.text())
                         .then(content => {
-                            content = content.replace(/\n\s*\n/g, '</p><p>'); // Replace consecutive newlines with paragraph breaks
-                            content = '<p>' + content + '</p>'; // Wrap the entire content in a paragraph
+                            content = content.replace(/\n\s*\n/g, '</p><p>');
+                            content = '<p>' + content + '</p>';
                             storyContentPlaceholder.innerHTML = `
                                 <h3>Story</h3>
                                 <div>${content}</div>
