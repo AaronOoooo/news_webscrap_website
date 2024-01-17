@@ -1,17 +1,17 @@
 # Import necessary libraries
-from flask import Flask, render_template, send_from_directory, request
+from flask import Flask, render_template, send_from_directory
 import os
 import requests
 from bs4 import BeautifulSoup
 import threading
 import time
 from datetime import datetime
+# Import Flask-CORS
+from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
-
-# Path to the log file
-LOG_FILE_PATH = 'access_log.txt'
+CORS(app)  # Enable CORS for all routes
 
 # Initialize variables to store headlines, links, and temperature for CNN, NPR, and Chicago
 app.config.update(
@@ -91,7 +91,12 @@ def get_npr_headlines():
         else:
             print("No headline tag found:", li_tag)
 
+    # Debugging: Print headlines and links to check
+    print("NPR Headlines:", headlines)
+    print("NPR Links:", links)
+
     return headlines, links
+
 
 # Function to get the current temperature for Chicago using OpenWeatherMap API
 def get_chicago_temperature(api_key):
@@ -107,7 +112,7 @@ def get_chicago_temperature(api_key):
 
 # Function to refresh headlines and temperature
 def refresh_data():
-    while True:         
+    while True:
         # Get headlines from CNN Lite
         cnn_headlines, cnn_links = get_cnn_lite_headlines()
 
@@ -117,18 +122,18 @@ def refresh_data():
         # Get the current temperature for Chicago
         chicago_temperature = get_chicago_temperature(api_key="place_holder")
 
-        # Update the app configuration with the latest data, including the formatted date
+        # Update the app configuration with the latest data
         app.config.update(
             cnn_headlines=cnn_headlines,
             cnn_links=cnn_links,
             npr_headlines=npr_headlines,
             npr_links=npr_links,
             chicago_temperature=chicago_temperature,
-            last_update=datetime.now().strftime("%a, %b %d, %Y @ %I:%M:%S %p"),  # Format the date with abbreviated day and month
+            last_update=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         )
 
         # Sleep for 15 minutes before refreshing again
-        time.sleep(600)
+        time.sleep(900)
 
 # Run the refresh_data function before the first request is processed
 @app.before_first_request
@@ -139,19 +144,18 @@ def activate_job():
 # Define a route for the main page
 @app.route('/')
 def index():
-    # Get the visitor's IP address
-    visitor_ip = request.remote_addr
-
-    # Log the time, date, and IP address to a file
-    current_datetime = datetime.now().strftime("%a, %b %d, %Y @ %I:%M:%S %p")
-    log_entry = f"Visitor IP: {visitor_ip} - Date and Time: {current_datetime}\n"
-
-    with open(LOG_FILE_PATH, 'a') as log_file:
-        log_file.write(log_entry)
-
     # Retrieve headlines, links, temperature, and last update time from app configuration
     data = app.config
     return render_template('index.html', **data)
+
+# Function to fetch NPR content through the server-side proxy
+@app.route('/fetch_npr_content/<path:url>')
+def fetch_npr_content(url):
+    try:
+        response = requests.get(url)
+        return response.text, response.status_code, {'Content-Type': 'text/html'}
+    except Exception as e:
+        return str(e), 500, {'Content-Type': 'text/plain'}
 
 @app.route('/favicon.ico')
 def favicon():
@@ -163,9 +167,4 @@ def favicon():
 
 # Run the Flask app if this script is executed directly
 if __name__ == '__main__':
-    # Create the log file if it doesn't exist
-    if not os.path.exists(LOG_FILE_PATH):
-        with open(LOG_FILE_PATH, 'w') as log_file:
-            log_file.write("Access Log:\n")
-
     app.run(debug=True, host='192.168.50.210', port=5000)
