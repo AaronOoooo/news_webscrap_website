@@ -129,7 +129,7 @@ def refresh_data():
             npr_headlines=npr_headlines,
             npr_links=npr_links,
             chicago_temperature=chicago_temperature,
-            last_update=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            last_update = datetime.now().strftime("%b %d, %Y | %I:%M %p"),
         )
 
         # Sleep for 15 minutes before refreshing again
