@@ -53,17 +53,17 @@
         document.addEventListener("DOMContentLoaded", function() {
             var headlineLinks = document.querySelectorAll('.headline-link');
             var storyContentPlaceholder = document.getElementById('story-content-placeholder');
-
+    
             headlineLinks.forEach(function(link) {
                 link.addEventListener('click', function(event) {
                     event.preventDefault();
-
+    
                     var url = link.getAttribute('data-url');
                     fetch('http://192.168.50.210:5000/fetch_npr_content/' + encodeURIComponent(url), { mode: 'cors' })
                         .then(response => response.text())
                         .then(content => {
                             content = content.replace(/\n\s*\n/g, '</p><p>');
-                            content = '<p>' + content + '</p>';
+                            content = '<p>' + content.replace(/\n/g, '</p><p>') + '</p>';  // Ensure paragraphs are wrapped in <p> tags
                             storyContentPlaceholder.innerHTML = `
                                 <h3>Story</h3>
                                 <div>${content}</div>
@@ -76,6 +76,6 @@
                 });
             });
         });
-    </script>
+    </script>    
 </body>
 </html>
