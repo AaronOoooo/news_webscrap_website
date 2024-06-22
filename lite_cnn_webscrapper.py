@@ -6,8 +6,13 @@ from bs4 import BeautifulSoup
 import threading
 import time
 from datetime import datetime
+from dotenv import load_dotenv  # Import dotenv
+
 # Import Flask-CORS
 from flask_cors import CORS
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -97,9 +102,9 @@ def get_npr_headlines():
 
     return headlines, links
 
-
 # Function to get the current temperature for Chicago using OpenWeatherMap API
-def get_chicago_temperature(api_key):
+def get_chicago_temperature():
+    api_key = os.getenv("OpenWeatherAPIKey").strip("'")  # Get the API key from environment variables and strip quotes
     api_url = f"http://api.openweathermap.org/data/2.5/weather?q=Chicago,us&units=imperial&appid={api_key}"
     response = requests.get(api_url)
 
@@ -120,7 +125,7 @@ def refresh_data():
         npr_headlines, npr_links = get_npr_headlines()
 
         # Get the current temperature for Chicago
-        chicago_temperature = get_chicago_temperature(api_key="place_holder")
+        chicago_temperature = get_chicago_temperature()
 
         # Update the app configuration with the latest data
         app.config.update(
@@ -148,25 +153,12 @@ def index():
     data = app.config
     return render_template('index.html', **data)
 
-
 # Function to fetch NPR content through the server-side proxy
 @app.route('/fetch_npr_content/<path:url>')
 def fetch_npr_content(url):
     try:
         response = requests.get(url)
-        soup = BeautifulSoup(response.content, "html.parser")
-
-        # Extract the main content, assuming the article text is within <article> tags or specific class (you may need to adjust this based on NPR's HTML structure)
-        article_content = soup.find('article')  # Adjust this if the content is not within an <article> tag
-        if not article_content:
-            # Fallback to a generic container if article is not found
-            article_content = soup.find(class_='topic-container')
-
-        # Get text content
-        paragraphs = article_content.find_all('p') if article_content else []
-        content = '\n'.join([p.get_text() for p in paragraphs])
-
-        return content, 200, {'Content-Type': 'text/plain'}
+        return response.text, response.status_code, {'Content-Type': 'text/html'}
     except Exception as e:
         return str(e), 500, {'Content-Type': 'text/plain'}
 
