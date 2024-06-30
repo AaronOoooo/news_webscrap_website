@@ -10,7 +10,13 @@ body {
 }
 
 header {
-    /* Keep any specific styles here */
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: white;
+    z-index: 1000; /* Ensure it stays on top of other elements */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    padding: 10px 0; /* Add padding for spacing */
 }
 
 main {
@@ -19,7 +25,7 @@ main {
     align-items: center;
     width: 100%;
     max-width: 1200px;
-    margin-top: 20px;
+    margin-top: 80px; /* Add top margin to compensate for the fixed header height */
     background-color: #ffffff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow for depth */
 }
