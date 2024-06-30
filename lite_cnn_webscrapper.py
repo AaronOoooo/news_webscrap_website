@@ -1,4 +1,3 @@
-# Import necessary libraries
 from flask import Flask, render_template, send_from_directory
 import os
 import requests
@@ -6,46 +5,28 @@ from bs4 import BeautifulSoup
 import threading
 import time
 from datetime import datetime
+from flask_cors import CORS
 from dotenv import load_dotenv  # Import dotenv
 
-# Import Flask-CORS
-from flask_cors import CORS
+load_dotenv()  # Load environment variables from .env file
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
-# Initialize variables to store headlines, links, and temperature for CNN, NPR, and Chicago
 app.config.update(
     cnn_headlines=[],
     cnn_links=[],
     npr_headlines=[],
     npr_links=[],
-    chicago_temperature='N/A',  # Default value
+    chicago_temperature='N/A',
     last_update='N/A'
 )
 
 app.config['STATIC_FOLDER'] = 'static'
 
-# Function to get headlines from a generic website
+data_initialized = False
+
 def get_headlines(url, tag, class_name, base_url='', text_inside_tag=False):
-    """
-    Extract headlines and links from a website.
-
-    Parameters:
-    - url: The URL of the website.
-    - tag: The HTML tag containing the headlines.
-    - class_name: The CSS class of the tag containing the headlines.
-    - base_url: The base URL to be appended to relative links.
-    - text_inside_tag: Boolean flag to indicate whether to get the text inside the tag even if split across multiple nodes.
-
-    Returns:
-    - headlines: List of extracted headlines.
-    - links: List of corresponding links.
-    """
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
 
@@ -56,10 +37,8 @@ def get_headlines(url, tag, class_name, base_url='', text_inside_tag=False):
         headline_tag = card_tag.find("a")
 
         if headline_tag is not None:
-            # Get the text inside the anchor tag
             if text_inside_tag:
                 headline = headline_tag.get_text(separator=' ', strip=True)
-
             else:
                 headline = headline_tag.text.strip()
 
@@ -71,12 +50,10 @@ def get_headlines(url, tag, class_name, base_url='', text_inside_tag=False):
 
     return headlines, links
 
-# Function to get headlines from CNN Lite
 def get_cnn_lite_headlines():
     cnn_url = "https://lite.cnn.com"
     return get_headlines(cnn_url, "li", "card--lite", cnn_url)
 
-# Function to get headlines from NPR
 def get_npr_headlines():
     npr_url = "https://text.npr.org"
     response = requests.get(npr_url)
@@ -96,15 +73,9 @@ def get_npr_headlines():
         else:
             print("No headline tag found:", li_tag)
 
-    # Debugging: Print headlines and links to check
-    print("NPR Headlines:", headlines)
-    print("NPR Links:", links)
-
     return headlines, links
 
-# Function to get the current temperature for Chicago using OpenWeatherMap API
-def get_chicago_temperature():
-    api_key = os.getenv("OpenWeatherAPIKey").strip("'")  # Get the API key from environment variables and strip quotes
+def get_chicago_temperature(api_key):
     api_url = f"http://api.openweathermap.org/data/2.5/weather?q=Chicago,us&units=imperial&appid={api_key}"
     response = requests.get(api_url)
 
@@ -115,45 +86,36 @@ def get_chicago_temperature():
     else:
         return 'N/A'
 
-# Function to refresh headlines and temperature
 def refresh_data():
     while True:
-        # Get headlines from CNN Lite
         cnn_headlines, cnn_links = get_cnn_lite_headlines()
-
-        # Get headlines from NPR
         npr_headlines, npr_links = get_npr_headlines()
+        chicago_temperature = get_chicago_temperature(api_key=os.getenv("API_KEY"))
 
-        # Get the current temperature for Chicago
-        chicago_temperature = get_chicago_temperature()
-
-        # Update the app configuration with the latest data
         app.config.update(
             cnn_headlines=cnn_headlines,
             cnn_links=cnn_links,
             npr_headlines=npr_headlines,
             npr_links=npr_links,
             chicago_temperature=chicago_temperature,
-            last_update = datetime.now().strftime("%b %d, %Y | %I:%M %p"),
+            last_update=datetime.now().strftime("%b %d, %Y | %I:%M %p"),
         )
 
-        # Sleep for 15 minutes before refreshing again
         time.sleep(900)
 
-# Run the refresh_data function before the first request is processed
-@app.before_first_request
+@app.before_request
 def activate_job():
-    refresh_thread = threading.Thread(target=refresh_data)
-    refresh_thread.start()
+    global data_initialized
+    if not data_initialized:
+        refresh_thread = threading.Thread(target=refresh_data)
+        refresh_thread.start()
+        data_initialized = True
 
-# Define a route for the main page
 @app.route('/')
 def index():
-    # Retrieve headlines, links, temperature, and last update time from app configuration
     data = app.config
     return render_template('index.html', **data)
 
-# Function to fetch NPR content through the server-side proxy
 @app.route('/fetch_npr_content/<path:url>')
 def fetch_npr_content(url):
     try:
@@ -170,6 +132,5 @@ def favicon():
         mimetype='image/vnd.microsoft.icon'
     )
 
-# Run the Flask app if this script is executed directly
 if __name__ == '__main__':
-    app.run(debug=True, host='192.168.50.210', port=5000)
+    app.run(debug=True, host='192.168.50.214', port=9000)
